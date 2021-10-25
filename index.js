@@ -33,21 +33,21 @@ client.on('message', async message =>{
 
 
 
-fs.readdir('./events/', (err, files) => { // We use the method readdir to read what is in the events folder
-    if (err) return console.error(err); // If there is an error during the process to read all contents of the ./events folder, throw an error in the console
+fs.readdir('./events/', (err, files) => { 
+    if (err) return console.error(err); 
     files.forEach(file => {
-        const eventFunction = require(`./events/${file}`); // Here we require the event file of the events folder
-        if (eventFunction.disabled) return; // Check if the eventFunction is disabled. If yes return without any error
+        const eventFunction = require(`./events/${file}`); 
+        if (eventFunction.disabled) return; 
 
-        const event = eventFunction.event || file.split('.')[0]; // Get the exact name of the event from the eventFunction variable. If it's not given, the code just uses the name of the file as name of the event
-        const emitter = (typeof eventFunction.emitter === 'string' ? client[eventFunction.emitter] : eventFunction.emitter) || client; // Here we define our emitter. This is in our case the client (the bot)
-        const once = eventFunction.once; // A simple variable which returns if the event should run once
+        const event = eventFunction.event || file.split('.')[0]; 
+        const emitter = (typeof eventFunction.emitter === 'string' ? client[eventFunction.emitter] : eventFunction.emitter) || client; 
+        const once = eventFunction.once; 
 
-        // Try catch block to throw an error if the code in try{} doesn't work
+        
         try {
             emitter[once ? 'once' : 'on'](event, (...args) => eventFunction.run(...args)); // Run the event using the above defined emitter (client)
         } catch (error) {
-            console.error(error.stack); // If there is an error, console log the error stack message
+            console.error(error.stack); 
         }
     });
 
